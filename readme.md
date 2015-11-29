@@ -14,6 +14,10 @@ You'll be writing to S3, and so you'll need to make sure that your shell environ
 $ mapbox-tile-copy <file> <s3 url template>
 ```
 
+The file extension used on `<s3 url template>` will determine the format of raster tiles from gdal sources (tif, vrt). Accepted formats/extensions are `webp``jpg``jpeg``png`. Default compression options are [from mapnik](https://github.com/mapnik/mapnik/wiki/Image-IO#default-output-details). If no extension is given, format will default to `webp` or can be overridden with the argument `--format=jpeg`.
+
+By default, retina (512x512) tiles are created. Pass the argument `--retina=false` to create non-retina (256x256) tiles for raster tiles from gdal sources.
+
 #### Examples:
 
 Copy tiles from an mbtiles file to a folder in `my-bucket`:

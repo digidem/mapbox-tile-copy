@@ -13,5 +13,7 @@ Options:
   --parts=[number]
   --part=[number]
   --stats=[filename]
+  --format=[format]  Force output format for raster tiles from gdal sources (defaults to using the s3 url file extension, or `webp` if no file extension)
+  --retina=[boolean] Create retina (512x512) or non-retina (256x256) tiles. Default true
   --retry=[number]     Retry get/put operations on failure
   --progressinterval=[number of seconds]   If not included, shows progress by default
