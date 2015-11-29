@@ -18,12 +18,17 @@ var util = require('util');
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
+var path = require('path');
+var url = require('url');
 http.globalAgent.maxSockets = 30;
 https.globalAgent.maxSockets = 30;
 
 var mapboxTileCopy = require('../index.js');
 var s3urls = require('s3urls');
-var argv = require('minimist')(process.argv.slice(2));
+var argv = require('minimist')(process.argv.slice(2), {
+  boolean: ['retina'],
+  default: {retina: true}
+});
 
 if (!argv._[0]) {
   process.stdout.write(fs.readFileSync(__dirname + '/help', 'utf8'));
@@ -66,6 +71,24 @@ if (!dsturi || !s3urls.valid(dsturi)) {
   console.error('You must provide a valid S3 url');
   process.exit(1);
 }
+
+var parsedDstUrl = url.parse(dsturi)
+var ext = path.extname(parsedDstUrl.pathname).slice(1)
+var FORMATS = 'jpg,jpeg,png,webp'.split(',')
+
+if (argv.format) {
+  if (FORMATS.indexOf(argv.format) === -1) {
+    console.error('--format must be one of: %s', FORMATS.join(','))
+    process.exit(1)
+  }
+  options.format = argv.format
+} else if (ext && FORMATS.indexOf(ext) > -1) {
+  options.format = (ext === 'jpg') ? 'jpeg' : ext
+} else {
+  options.format = 'webp'
+}
+
+options.retina = argv.retina
 
 fs.exists(srcfile, function(exists) {
   if (!exists) {
